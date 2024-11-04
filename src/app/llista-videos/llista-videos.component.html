@@ -1,8 +1,10 @@
-<label for="membership">Elige que video quieres ver </label>
-<select name="membership" id="membership">
-  <option *ngFor="let video of videos" [value]="video">{{ video }}</option>
+<label for="videoSelect">Elige que video quieres ver</label>
+<select name="videoSelect" id="videoSelect" [(ngModel)]="selectedVideo">
+  <option *ngFor="let video of socketService.videos" [value]="video">{{ video }}</option>
 </select>
-<br><br>
-<button (click)="enviarVideoTriat">
-  Seleccionar
-</button>
+
+<button (click)="sendSelectedVideo()">Enviar Video</button>
+
+<div *ngIf="socketService.authCode">
+  <p>Codi d'Autenticació: {{ socketService.authCode }}</p>
+</div>
