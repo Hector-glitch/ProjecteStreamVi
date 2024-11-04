@@ -15,10 +15,6 @@ export class LlistaVideosComponent {
 
   constructor(public socketService: SocketService) {}
 
-  ngOnInit(): void {
-    // Inicia el servei i recupera la llista de vídeos
-  }
-
   // Funció per enviar el vídeo seleccionat al servidor
   sendSelectedVideo() {
     if (this.selectedVideo) {
