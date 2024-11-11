@@ -22,7 +22,7 @@ export class LlistaVideosComponent {
     if (this.selectedVideo) {
       this.socketService.selectVideo(this.selectedVideo);
     }
-    this.router.navigate(['/client2']);
+    this.router.navigate(['/client2']);//
 
   }
 }
