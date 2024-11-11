@@ -13,7 +13,7 @@ export class SocketService {
     // Conexió al servidor Socket.IO
     this.socket = io('http://localhost:3000');
 
-    // Escolta la llista de vídeos des del servidor
+    // Escolta la llista de vídeos desde el servidor
     this.socket.on('videoList', (videoList: string[]) => {
       this.videos = videoList;
     });
