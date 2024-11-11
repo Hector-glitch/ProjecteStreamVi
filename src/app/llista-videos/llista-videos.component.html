@@ -7,11 +7,13 @@
 
 <button (click)="sendSelectedVideo()" >Enviar Video</button>
 
-
-
-<!-- Nueva sintaxis de @ngIf para Angular 16+ -->
 <div *ngIf="socketService.authCode as authCode">
   <p>Codi d'Autenticació: {{ authCode }}</p>
+</div>
+
+<div>
+  <p>VER VIDEO</p>
+  <button (click)="verifySelectedVideo()" >Verificar</button>
 </div>
 <div>
 
