@@ -1,10 +1,18 @@
 <label for="videoSelect">Elige que video quieres ver</label>
 <select name="videoSelect" id="videoSelect" [(ngModel)]="selectedVideo">
-  <option *ngFor="let video of socketService.videos" [value]="video">{{ video }}</option>
+  <ng-container *ngFor="let video of socketService.videos">
+    <option [value]="video">{{ video }}</option>
+  </ng-container>
 </select>
 
-<button (click)="sendSelectedVideo()">Enviar Video</button>
+<button (click)="sendSelectedVideo()" >Enviar Video</button>
 
-<div *ngIf="socketService.authCode">
-  <p>Codi d'Autenticació: {{ socketService.authCode }}</p>
+
+
+<!-- Nueva sintaxis de @ngIf para Angular 16+ -->
+<div *ngIf="socketService.authCode as authCode">
+  <p>Codi d'Autenticació: {{ authCode }}</p>
+</div>
+<div>
+
 </div>
