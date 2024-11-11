@@ -22,6 +22,10 @@ export class LlistaVideosComponent {
     if (this.selectedVideo) {
       this.socketService.selectVideo(this.selectedVideo);
     }
+
+  }
+  verifySelectedVideo() {
+
     this.router.navigate(['/client2']);//
 
   }
