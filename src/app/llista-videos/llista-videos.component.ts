@@ -25,9 +25,11 @@ export class LlistaVideosComponent {
 
   }
   verifySelectedVideo() {
+    this.router.navigate(['/client2']);
+  }
 
-    this.router.navigate(['/client2']);//
-
+  pintarVideo(){
+    return false;
   }
 }
 

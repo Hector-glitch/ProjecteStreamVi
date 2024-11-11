@@ -15,6 +15,9 @@
   <p>VER VIDEO</p>
   <button (click)="verifySelectedVideo()" >Verificar</button>
 </div>
-<div>
 
+<div [hidden]="pintarVideo()">
+  <video width="640" height="360" controls>
+    <source src="https://www.youtube.com/watch?v=IIzgHLSK8ao" type="video/mp4">
+  </video>
 </div>
