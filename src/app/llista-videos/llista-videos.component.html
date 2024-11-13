@@ -13,7 +13,8 @@
 
 <div>
   <p>VER VIDEO</p>
-  <button (click)="verifySelectedVideo()">Verificar</button>
+  <!-- Deshabilitar el botón "Verificar" si no se ha enviado el video -->
+  <button (click)="verifySelectedVideo()" [disabled]="!isVideoSent">Verificar</button>
 </div>
 
 <!-- Mostrar el video si el código es correcto -->
@@ -22,3 +23,4 @@
     <source src="https://www.youtube.com/watch?v=IIzgHLSK8ao" type="video/mp4">
   </video>
 </div>
+

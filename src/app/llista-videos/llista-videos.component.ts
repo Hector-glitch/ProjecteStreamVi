@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 export class LlistaVideosComponent implements OnInit {
   selectedVideo: string = '';
   videoVisible: boolean = false; // Estado de visibilidad del video
+  isVideoSent: boolean = false;  // Nueva propiedad para rastrear si el video ha sido enviado
 
   constructor(public socketService: SocketService, private router: Router) {}
 
@@ -29,12 +30,18 @@ export class LlistaVideosComponent implements OnInit {
   sendSelectedVideo() {
     if (this.selectedVideo) {
       this.socketService.selectVideo(this.selectedVideo);
+      this.isVideoSent = true; // Cambia a true cuando el video es enviado
     }
   }
 
   // Navegación a la página de verificación
   verifySelectedVideo() {
     this.router.navigate(['/client2']);
+  }
+
+  // Condición para mostrar el video
+  pintarVideo() {
+    return !this.videoVisible;
   }
 }
 
