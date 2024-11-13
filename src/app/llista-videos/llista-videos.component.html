@@ -5,7 +5,7 @@
   </ng-container>
 </select>
 
-<button (click)="sendSelectedVideo()" >Enviar Video</button>
+<button (click)="sendSelectedVideo()">Enviar Video</button>
 
 <div *ngIf="socketService.authCode as authCode">
   <p>Codi d'Autenticació: {{ authCode }}</p>
@@ -13,10 +13,11 @@
 
 <div>
   <p>VER VIDEO</p>
-  <button (click)="verifySelectedVideo()" >Verificar</button>
+  <button (click)="verifySelectedVideo()">Verificar</button>
 </div>
 
-<div [hidden]="pintarVideo()">
+<!-- Mostrar el video si el código es correcto -->
+<div *ngIf="videoVisible">
   <video width="640" height="360" controls>
     <source src="https://www.youtube.com/watch?v=IIzgHLSK8ao" type="video/mp4">
   </video>

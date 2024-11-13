@@ -1,5 +1,5 @@
 import {NgFor, NgForOf, NgIf} from '@angular/common';
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SocketService} from './socket.service';
 import {FormsModule} from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,24 +12,34 @@ import { Router } from '@angular/router';
   templateUrl: './llista-videos.component.html',
   styleUrls: ['./llista-videos.component.css']
 })
-export class LlistaVideosComponent {
+export class LlistaVideosComponent implements OnInit {
   selectedVideo: string = '';
+  videoVisible: boolean = false; // Estado de visibilidad del video
 
   constructor(public socketService: SocketService, private router: Router) {}
 
-  // Funció per enviar el vídeo seleccionat al servidor
+  ngOnInit() {
+    // Suscribimos al estado de verificación
+    this.socketService.isCodeVerified().subscribe((verified) => {
+      this.videoVisible = verified;
+    });
+  }
+
+  // Función para enviar el vídeo seleccionado
   sendSelectedVideo() {
     if (this.selectedVideo) {
       this.socketService.selectVideo(this.selectedVideo);
     }
-
   }
+
+  // Navegación a la página de verificación
   verifySelectedVideo() {
     this.router.navigate(['/client2']);
   }
 
-  pintarVideo(){
-    return false;
+  // Condición para mostrar el video
+  pintarVideo() {
+    return !this.videoVisible;
   }
 }
 
