@@ -39,10 +39,10 @@ export class LlistaVideosComponent implements OnInit {
     this.router.navigate(['/client2']);
   }
 
-  // Condición para mostrar el video
-  pintarVideo() {
-    return !this.videoVisible;
-  }
+  // Cosas video youtube
+
+
+
 }
 
 
