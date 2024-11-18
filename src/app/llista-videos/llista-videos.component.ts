@@ -38,11 +38,6 @@ export class LlistaVideosComponent implements OnInit {
   verifySelectedVideo() {
     this.router.navigate(['/client2']);
   }
-
-  // Condición para mostrar el video
-  pintarVideo() {
-    return !this.videoVisible;
-  }
 }
 
 

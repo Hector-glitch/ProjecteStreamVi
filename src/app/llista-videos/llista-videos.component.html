@@ -1,11 +1,13 @@
-<label for="videoSelect">Elige que video quieres ver</label>
+<body>
+<label for="videoSelect"><h3>Tria el video que vols veure:</h3></label>
+
 <select name="videoSelect" id="videoSelect" [(ngModel)]="selectedVideo">
   <ng-container *ngFor="let video of socketService.videos">
     <option [value]="video">{{ video }}</option>
   </ng-container>
 </select>
 
-<button (click)="sendSelectedVideo()">Enviar Video</button>
+<button style="margin-left: 10px" (click)="sendSelectedVideo()">Confirmar</button>
 
 <div *ngIf="socketService.authCode as authCode">
   <p>Codi d'Autenticació: {{ authCode }}</p>
@@ -16,11 +18,12 @@
   <!-- Deshabilitar el botón "Verificar" si no se ha enviado el video -->
   <button (click)="verifySelectedVideo()" [disabled]="!isVideoSent">Verificar</button>
 </div>
-
+<br>
 <!-- Mostrar el video si el código es correcto -->
 <div *ngIf="videoVisible">
   <video width="640" height="360" controls>
     <source src="https://www.youtube.com/watch?v=IIzgHLSK8ao" type="video/mp4">
   </video>
 </div>
+</body>
 

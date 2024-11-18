@@ -1,7 +1,7 @@
 const { Server } = require("socket.io");
 
 // Defineix una llista de vídeos disponibles al servidor
-const videos = ["video1.mp4", "video2.mp4", "video3.mp4"];
+const videos = ["video1", "video2", "video3"];
 
 const io = new Server(3000, {
   cors: {
