@@ -32,6 +32,7 @@ export class LlistaVideosComponent implements OnInit {
     if (this.selectedVideo) {
       this.socketService.selectVideo(this.selectedVideo);
       this.isVideoSent = true; // Cambia a true cuando el video es enviado
+      this.videoVisible = false;
     }
   }
 
