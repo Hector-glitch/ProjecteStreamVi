@@ -38,6 +38,11 @@ export class LlistaVideosComponent implements OnInit {
   verifySelectedVideo() {
     this.router.navigate(['/client2']);
   }
+
+  // Cosas video youtube
+
+
+
 }
 
 
