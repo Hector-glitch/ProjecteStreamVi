@@ -21,7 +21,7 @@ io.on("connection", (socket) => {
   // Escolta quan el client selecciona un vídeo
   socket.on("selectVideo", (videoName) => {
     console.log("Video selected by client:", videoName);
-    var linkVideo = "";
+    let linkVideo = "";
     if (videoName === "video1"){
       linkVideo = "https://www.youtube.com/watch?v=wIC18c1Qkcg";
     }

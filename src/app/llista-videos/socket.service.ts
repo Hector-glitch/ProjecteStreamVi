@@ -10,6 +10,7 @@ export class SocketService {
   public videos: string[] = [];       // Almacena la lista de videos recibidos
   public authCode: string = '';       // Almacena el código de autenticación recibido
   private codeVerified = new BehaviorSubject<boolean>(false); // Estado del código verificado
+  public linkVideo: string = '';      // Almacena el enlace del video seleccionado
 
   constructor() {
     // Conexión al servidor Socket.IO
@@ -23,6 +24,12 @@ export class SocketService {
     // Escucha el código de autenticación del servidor
     this.socket.on('authCode', (code: string) => {
       this.authCode = code;
+    });
+
+    // Escucha el enlace del video desde el servidor
+    this.socket.on('linkVideo', (link: string) => {
+      this.linkVideo = link; // Guarda el enlace del video
+      console.log('Link recibido:', link); // (Opcional) Verifica que el link esté correcto
     });
   }
 

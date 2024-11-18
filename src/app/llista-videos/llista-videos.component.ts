@@ -3,6 +3,7 @@ import {Component, OnInit} from '@angular/core';
 import {SocketService} from './socket.service';
 import {FormsModule} from '@angular/forms';
 import { Router } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'; // Per verificar que el link es segur
 
 
 @Component({
@@ -17,7 +18,7 @@ export class LlistaVideosComponent implements OnInit {
   videoVisible: boolean = false; // Estado de visibilidad del video
   isVideoSent: boolean = false;  // Nueva propiedad para rastrear si el video ha sido enviado
 
-  constructor(public socketService: SocketService, private router: Router) {}
+  constructor(  private sanitizer: DomSanitizer, public socketService: SocketService, private router: Router) {}
 
   ngOnInit() {
     // Suscribimos al estado de verificación
@@ -41,6 +42,18 @@ export class LlistaVideosComponent implements OnInit {
 
   // Cosas video youtube
 
+// Método para marcar la URL como segura
+  getSafeUrl(link: string): SafeResourceUrl {
+    // Transforma la URL de YouTube a un formato adecuado para un iframe
+    const embedLink = this.transformToEmbedLink(link);
+    return this.sanitizer.bypassSecurityTrustResourceUrl(embedLink);
+  }
+
+  // Transformar la URL de YouTube a formato embebido (iframe)
+  transformToEmbedLink(link: string): string {
+    const videoId = link.split('v=')[1];  // Extrae el videoId de la URL de YouTube
+    return `https://www.youtube.com/embed/${videoId}`;  // Devuelve la URL embebida
+  }
 
 
 }
