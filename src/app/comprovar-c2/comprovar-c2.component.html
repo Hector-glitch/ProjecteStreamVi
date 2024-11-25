@@ -1,11 +1,14 @@
 <body>
-<h2>Confirmacio del codi</h2>
-<p>Insereix el codi donat a la pagina anterior.
-  <br>Assegurat es el correcte per poder veure el video.</p>
+  <div class="marginLados">
+    <h2>Confirmacio del codi</h2>
+    <p>Insereix el codi donat a la pagina anterior.
+      <br>Assegurat es el correcte per poder veure el video.</p>
 
-<!-- Entrada para el código de verificación -->
-<input type="text" [(ngModel)]="inputCode" required />
+    <!-- Entrada para el código de verificación -->
+    <input type="text" [(ngModel)]="inputCode" required />
 
-<!-- Botón para confirmar el código -->
-<button (click)="confirmCode()">Confirmar Codi</button>
+    <!-- Botón para confirmar el código -->
+    <button (click)="confirmCode()">Confirmar Codi</button>
+  </div>
+
 </body>
