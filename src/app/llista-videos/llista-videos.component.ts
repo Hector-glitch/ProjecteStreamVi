@@ -38,7 +38,7 @@ export class LlistaVideosComponent implements OnInit {
 
   // Navegación a la página de verificación
   verifySelectedVideo() {
-    this.router.navigate(['/client2']);
+    window.location.href = 'http://localhost:4300';
   }
 
   // Cosas video youtube
@@ -58,5 +58,3 @@ export class LlistaVideosComponent implements OnInit {
 
 
 }
-
-

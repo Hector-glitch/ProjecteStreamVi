@@ -1,45 +1,56 @@
 const { Server } = require("socket.io");
 
-// Defineix una llista de vídeos disponibles al servidor
+// Define una lista de vídeos disponibles en el servidor
 const videos = ["video1", "video2", "video3"];
-
+const activeCodes = new Map(); // Mapa para almacenar códigos válidos
 
 const io = new Server(3000, {
   cors: {
-    origin: "http://localhost:4200",
+    origin: ["http://localhost:4200", "http://localhost:4300"],
     methods: ["GET", "POST"],
-  }
+  },
 });
 
 io.on("connection", (socket) => {
   console.log("Client connected");
 
-  // Envia la llista de vídeos al client quan es connecta
+  // Enviar la lista de vídeos al cliente al conectarse
   socket.emit("videoList", videos);
 
-  // Escolta quan el client selecciona un vídeo
+  // Escuchar cuando el cliente selecciona un vídeo
   socket.on("selectVideo", (videoName) => {
     console.log("Video selected by client:", videoName);
+
     let linkVideo = "";
-    if (videoName === "video1"){
+    if (videoName === "video1") {
       linkVideo = "https://www.youtube.com/watch?v=wIC18c1Qkcg";
     }
-    if (videoName === "video2"){
+    if (videoName === "video2") {
       linkVideo = "https://www.youtube.com/watch?v=QCw0L6FupQ0";
     }
-    if (videoName === "video3"){
+    if (videoName === "video3") {
       linkVideo = "https://www.youtube.com/watch?v=e1cWEKdTmuo";
     }
 
-    // Genera un codi aleatori de 4 lletres
+    // Generar un código aleatorio de 4 letras
     const code = Math.random().toString(36).substring(2, 6).toUpperCase();
+    activeCodes.set(code, linkVideo); // Almacena el código junto con el enlace del vídeo
 
-    // Envia el codi d'autenticació al client
+    // Enviar el código de autenticación al cliente
     socket.emit("authCode", code);
+    console.log(`Generated auth code: ${code} for video: ${linkVideo}`);
+  });
 
-    //Envia el link del video
-    socket.emit("linkVideo", linkVideo);
-
+  // Validar el código ingresado por el cliente
+  socket.on("validateCode", (code, callback) => {
+    if (activeCodes.has(code)) {
+      callback(true); // Código válido
+      console.log(`Code validated: ${code}`);
+      activeCodes.delete(code); // Borra el código una vez usado
+    } else {
+      callback(false); // Código inválido
+      console.log(`Invalid code attempt: ${code}`);
+    }
   });
 });
 
