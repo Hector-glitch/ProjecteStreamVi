@@ -3,50 +3,50 @@ import { io, Socket } from 'socket.io-client';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SocketService {
   private socket: Socket;
-  public videos: string[] = [];       // Almacena la lista de videos recibidos
-  public authCode: string = '';       // Almacena el código de autenticación recibido
-  private codeVerified = new BehaviorSubject<boolean>(false); // Estado del código verificado
-  public linkVideo: string = '';      // Almacena el enlace del video seleccionado
+  public videos: string[] = [];
+  public authCode: string = '';
+  private codeVerified = new BehaviorSubject<boolean>(false);
+  public linkVideo: string = '';
 
   constructor() {
-    // Conexión al servidor Socket.IO
     this.socket = io('http://localhost:3000');
 
-    // Escucha la lista de videos desde el servidor
     this.socket.on('videoList', (videoList: string[]) => {
       this.videos = videoList;
     });
 
-    // Escucha el código de autenticación del servidor
     this.socket.on('authCode', (code: string) => {
       this.authCode = code;
     });
 
-    // Escucha el enlace del video desde el servidor
     this.socket.on('linkVideo', (link: string) => {
-      this.linkVideo = link; // Guarda el enlace del video
-      console.log('Link recibido:', link); // (Opcional) Verifica que el link esté correcto
+      this.linkVideo = link;
     });
   }
 
-  // Envía el nombre del video seleccionado al servidor
   selectVideo(videoName: string) {
     this.socket.emit('selectVideo', videoName);
   }
 
-  // Verifica el código ingresado con el que se generó
-  verifyCode(inputCode: string): boolean {
-    const isValid = inputCode === this.authCode;
-    this.codeVerified.next(isValid); // Actualiza el estado de verificación
-    return isValid;
+  validateCode(code: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.socket.emit('validateCode', code, (isValid: boolean) => {
+        if (isValid) this.codeVerified.next(true);
+        resolve(isValid);
+      });
+    });
   }
 
-  // Observable para el estado de verificación del código
   isCodeVerified() {
     return this.codeVerified.asObservable();
+  }
+
+  transformToEmbedLink(link: string): string {
+    const videoId = link.split('v=')[1];
+    return `https://www.youtube.com/embed/${videoId}`;
   }
 }

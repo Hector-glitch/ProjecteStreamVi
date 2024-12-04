@@ -19,11 +19,5 @@ export class ComprovarC2Component {
 
   // Función para confirmar el código
   confirmCode() {
-    if (this.socketService.verifyCode(this.inputCode)) {
-      // Navegar de vuelta a la página principal si el código es correcto
-      this.router.navigate(['/']);
-    } else {
-      alert('Código incorrecto, inténtalo de nuevo.');
-    }
   }
 }

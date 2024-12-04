@@ -1,60 +1,58 @@
-import {NgFor, NgForOf, NgIf} from '@angular/common';
-import {Component, OnInit} from '@angular/core';
-import {SocketService} from './socket.service';
-import {FormsModule} from '@angular/forms';
+import { NgFor, NgIf } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'; // Per verificar que el link es segur
-
+import { Subscription } from 'rxjs';
+import { SocketService } from './socket.service';
 
 @Component({
   selector: 'app-llista-videos',
   standalone: true,
-  imports: [NgFor, FormsModule, NgForOf, NgIf],
+  imports: [NgFor, FormsModule, NgIf],
   templateUrl: './llista-videos.component.html',
-  styleUrls: ['./llista-videos.component.css']
+  styleUrls: ['./llista-videos.component.css'],
 })
-export class LlistaVideosComponent implements OnInit {
+export class LlistaVideosComponent implements OnInit, OnDestroy {
   selectedVideo: string = '';
-  videoVisible: boolean = false; // Estado de visibilidad del video
-  isVideoSent: boolean = false;  // Nueva propiedad para rastrear si el video ha sido enviado
+  videoVisible: boolean = false;
+  isVideoSent: boolean = false;
+  subscriptions: Subscription = new Subscription();
 
-  constructor(  private sanitizer: DomSanitizer, public socketService: SocketService, private router: Router) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    public socketService: SocketService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     // Suscribimos al estado de verificación
-    this.socketService.isCodeVerified().subscribe((verified) => {
-      this.videoVisible = verified;
-    });
+    this.subscriptions.add(
+      this.socketService.isCodeVerified().subscribe((verified) => {
+        this.videoVisible = verified;
+      })
+    );
   }
 
-  // Función para enviar el vídeo seleccionado
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
   sendSelectedVideo() {
     if (this.selectedVideo) {
       this.socketService.selectVideo(this.selectedVideo);
-      this.isVideoSent = true; // Cambia a true cuando el video es enviado
+      this.isVideoSent = true;
       this.videoVisible = false;
     }
   }
 
-  // Navegación a la página de verificación
   verifySelectedVideo() {
     window.location.href = 'http://localhost:4300';
   }
 
-  // Cosas video youtube
-
-// Método para marcar la URL como segura
   getSafeUrl(link: string): SafeResourceUrl {
-    // Transforma la URL de YouTube a un formato adecuado para un iframe
-    const embedLink = this.transformToEmbedLink(link);
-    return this.sanitizer.bypassSecurityTrustResourceUrl(embedLink);
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      this.socketService.transformToEmbedLink(link)
+    );
   }
-
-  // Transformar la URL de YouTube a formato embebido (iframe)
-  transformToEmbedLink(link: string): string {
-    const videoId = link.split('v=')[1];  // Extrae el videoId de la URL de YouTube
-    return `https://www.youtube.com/embed/${videoId}`;  // Devuelve la URL embebida
-  }
-
-
 }
