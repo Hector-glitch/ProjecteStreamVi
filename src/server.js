@@ -1,46 +1,59 @@
 const { Server } = require("socket.io");
+const express = require('express');
 
-// Defineix una llista de vídeos disponibles al servidor
-const videos = ["video1", "video2", "video3"];
+const app = express();
 
+const videos = {
+  video1: "https://www.youtube.com/watch?v=wIC18c1Qkcg",
+  video2: "https://www.youtube.com/watch?v=QCw0L6FupQ0",
+  video3: "https://www.youtube.com/watch?v=e1cWEKdTmuo",
+};
+let currentCode = null; // Código actual
+let currentLink = null; // Enlace del video actual
 
 const io = new Server(3000, {
   cors: {
-    origin: "http://localhost:4200",
+    origin: ["http://localhost:4200", "http://localhost:4300"],
     methods: ["GET", "POST"],
-  }
+  },
 });
 
 io.on("connection", (socket) => {
-  console.log("Client connected");
+  console.log("Cliente conectado");
 
-  // Envia la llista de vídeos al client quan es connecta
-  socket.emit("videoList", videos);
+  // Enviar lista de videos al cliente
+  socket.emit("videoList", Object.keys(videos));
 
-  // Escolta quan el client selecciona un vídeo
+  // Manejar selección de video
   socket.on("selectVideo", (videoName) => {
-    console.log("Video selected by client:", videoName);
-    let linkVideo = "";
-    if (videoName === "video1"){
-      linkVideo = "https://www.youtube.com/watch?v=wIC18c1Qkcg";
+    const linkVideo = videos[videoName];
+    if (linkVideo) {
+      currentCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+      currentLink = linkVideo;
+      socket.emit("authCode", currentCode);
+      console.log(`Código generado: ${currentCode} para el video: ${linkVideo}`);
     }
-    if (videoName === "video2"){
-      linkVideo = "https://www.youtube.com/watch?v=QCw0L6FupQ0";
+  });
+
+  // Validar código
+  socket.on("validateCode", (code, callback) => {
+    const isValid = code === currentCode;
+    if (isValid) {
+      callback(true);
+      socket.emit("linkVideo", currentLink);
+    } else {
+      callback(false);
     }
-    if (videoName === "video3"){
-      linkVideo = "https://www.youtube.com/watch?v=e1cWEKdTmuo";
-    }
+  });
 
-    // Genera un codi aleatori de 4 lletres
-    const code = Math.random().toString(36).substring(2, 6).toUpperCase();
-
-    // Envia el codi d'autenticació al client
-    socket.emit("authCode", code);
-
-    //Envia el link del video
-    socket.emit("linkVideo", linkVideo);
-
+  // Estado de verificación
+  socket.on("getVerificationStatus", (callback) => {
+    callback(!!currentCode);
   });
 });
 
-console.log("Server running on port 3000");
+const cors = require('cors');
+app.use(cors());
+
+
+console.log("Servidor ejecutándose en el puerto 3000");
