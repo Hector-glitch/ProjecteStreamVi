@@ -30,11 +30,16 @@ export class LlistaVideosComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Consultar estado en el servidor al cargar el componente
-    this.socketService.getVerificationStatus().then((status) => {
-      this.videoVisible = status;
+    // Consultar estado de selección en el servidor al cargar el componente
+    this.socketService.getSelectedVideo().then((videoLink) => {
+      if (videoLink) {
+        this.socketService.linkVideo = videoLink; // Actualiza el enlace en el servicio
+        this.videoVisible = true; // Muestra el video si está verificado
+      }
     });
   }
+
+
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
@@ -42,19 +47,19 @@ export class LlistaVideosComponent implements OnInit, OnDestroy {
 
   sendSelectedVideo() {
     if (this.selectedVideo) {
-      this.socketService.selectVideo(this.selectedVideo);
-      this.isVideoSent = true;
-      this.videoVisible = false;
+      this.socketService.selectVideo(this.selectedVideo); // Notifica al servidor sobre la selección
+      this.isVideoSent = true; // Indica que se ha enviado
+      this.videoVisible = false; // Oculta el video, ya que requiere verificación
+      alert("Selección realizada. Verifica el código en la siguiente página.");
     }
   }
 
+
   verifySelectedVideo() {
-    window.location.href = 'http://localhost:4300';
+    window.location.href = 'http://localhost:4300'; // Redirigir a la página de verificación
   }
 
   getSafeUrl(link: string): SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(
-      this.socketService.transformToEmbedLink(link)
-    );
+    return this.sanitizer.bypassSecurityTrustResourceUrl(link);
   }
 }
