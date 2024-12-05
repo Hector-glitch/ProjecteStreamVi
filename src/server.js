@@ -1,4 +1,7 @@
 const { Server } = require("socket.io");
+const express = require('express');
+
+const app = express();
 
 const videos = {
   video1: "https://www.youtube.com/watch?v=wIC18c1Qkcg",
@@ -48,5 +51,9 @@ io.on("connection", (socket) => {
     callback(!!currentCode);
   });
 });
+
+const cors = require('cors');
+app.use(cors());
+
 
 console.log("Servidor ejecutándose en el puerto 3000");

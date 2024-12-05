@@ -2,7 +2,6 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SocketService } from './socket.service';
 
@@ -22,7 +21,6 @@ export class LlistaVideosComponent implements OnInit, OnDestroy {
   constructor(
     private sanitizer: DomSanitizer,
     public socketService: SocketService,
-    private router: Router
   ) {}
 
   ngOnInit() {
