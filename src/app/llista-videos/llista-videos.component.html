@@ -1,33 +1,32 @@
 <body>
-  <div class="marginLados">
-    <label for="videoSelect"><h3>Tria el video que vols veure:</h3></label>
+<div class="marginLados">
+  <label for="videoSelect"><h3>Tria el video que vols veure:</h3></label>
 
-    <select name="videoSelect" id="videoSelect" [(ngModel)]="selectedVideo">
-      <ng-container *ngFor="let video of socketService.videos">
-        <option [value]="video">{{ video }}</option>
-      </ng-container>
-    </select>
+  <select name="videoSelect" id="videoSelect" [(ngModel)]="selectedVideo">
+    <ng-container *ngFor="let video of socketService.videos">
+      <option [value]="video">{{ video }}</option>
+    </ng-container>
+  </select>
 
-    <button style="margin-left: 10px" (click)="sendSelectedVideo()">Confirmar</button>
+  <button style="margin-left: 10px" (click)="sendSelectedVideo()">Confirmar</button>
 
-    <div *ngIf="socketService.authCode as authCode">
-      <p>Codi d'Autenticació: {{ authCode }}</p>
-    </div>
-
-    <div>
-      <p>VER VIDEO</p>
-      <!-- Deshabilitar el botón "Verificar" si no se ha enviado el video -->
-      <button (click)="verifySelectedVideo()" [disabled]="!isVideoSent">Verificar</button>
-    </div>
-    <br>
-    <!-- Mostrar el video si el código es correcto -->
-    <div *ngIf="videoVisible">
-      <iframe
-        width="640"
-        height="360"
-        [src]="getSafeUrl(socketService.linkVideo)">
-      </iframe>
-    </div>
+  <div *ngIf="socketService.authCode as authCode">
+    <p>Codi d'Autenticació: {{ authCode }}</p>
   </div>
-</body>
 
+  <div>
+    <p>VER VIDEO</p>
+    <!-- Deshabilitar el botón "Verificar" si no se ha enviado el video -->
+    <button (click)="verifySelectedVideo()" [disabled]="!isVideoSent">Verificar</button>
+  </div>
+  <br>
+  <!-- Mostrar el video si el código es correcto -->
+  <div *ngIf="videoVisible">
+    <iframe
+      width="640"
+      height="360"
+      [src]="getSafeUrl(socketService.linkVideo)">
+    </iframe>
+  </div>
+</div>
+</body>

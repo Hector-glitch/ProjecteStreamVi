@@ -9,8 +9,12 @@ export class SocketService {
   private socket: Socket;
   public videos: string[] = [];
   public authCode: string = '';
-  private codeVerified = new BehaviorSubject<boolean>(false);
-  public linkVideo: string = '';
+  public linkVideo: string = '';  // Almacenar el enlace del video
+  private codeVerified = new BehaviorSubject<boolean>(false);  // Añadimos el BehaviorSubject para gestionar el estado de verificación
+  private linkVideoSubject = new BehaviorSubject<string>('');
+
+  linkVideo$ = this.linkVideoSubject.asObservable();  // Observable para que los componentes escuchen cambios
+  isCodeVerified$ = this.codeVerified.asObservable();  // Observable para que los componentes escuchen la verificación del código
 
   constructor() {
     this.socket = io('http://localhost:3000');
@@ -25,6 +29,11 @@ export class SocketService {
 
     this.socket.on('linkVideo', (link: string) => {
       this.linkVideo = link;
+      this.linkVideoSubject.next(link);  // Emitir el nuevo enlace al observador
+    });
+
+    this.socket.on('codeVerified', (isVerified: boolean) => {
+      this.codeVerified.next(isVerified);  // Actualizar el estado de la verificación del código
     });
   }
 
@@ -35,7 +44,7 @@ export class SocketService {
   validateCode(code: string): Promise<boolean> {
     return new Promise((resolve) => {
       this.socket.emit('validateCode', code, (isValid: boolean) => {
-        this.codeVerified.next(isValid);
+        this.codeVerified.next(isValid);  // Actualizar el estado de la verificación
         resolve(isValid);
       });
     });
@@ -49,12 +58,15 @@ export class SocketService {
     });
   }
 
-  isCodeVerified() {
-    return this.codeVerified.asObservable();
+  getSelectedVideo(): Promise<string> {
+    return new Promise((resolve) => {
+      this.socket.emit('getSelectedVideo', (videoLink: string) => {
+        resolve(videoLink); // Devuelve el enlace del video almacenado en el servidor
+      });
+    });
   }
 
-  transformToEmbedLink(link: string): string {
-    const videoId = link.split('v=')[1];
-    return `https://www.youtube.com/embed/${videoId}`;
+  isCodeVerified() {
+    return this.codeVerified.asObservable();
   }
 }
