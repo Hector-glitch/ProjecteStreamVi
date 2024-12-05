@@ -5,7 +5,8 @@ const videos = {
   video2: "https://www.youtube.com/watch?v=QCw0L6FupQ0",
   video3: "https://www.youtube.com/watch?v=e1cWEKdTmuo",
 };
-const activeCodes = new Map();
+let currentCode = null; // Código actual
+let currentLink = null; // Enlace del video actual
 
 const io = new Server(3000, {
   cors: {
@@ -15,29 +16,37 @@ const io = new Server(3000, {
 });
 
 io.on("connection", (socket) => {
-  console.log("Client connected");
+  console.log("Cliente conectado");
+
+  // Enviar lista de videos al cliente
   socket.emit("videoList", Object.keys(videos));
 
+  // Manejar selección de video
   socket.on("selectVideo", (videoName) => {
     const linkVideo = videos[videoName];
     if (linkVideo) {
-      const code = Math.random().toString(36).substring(2, 6).toUpperCase();
-      activeCodes.set(code, linkVideo);
-      socket.emit("authCode", code);
-      console.log(`Generated auth code: ${code} for video: ${linkVideo}`);
+      currentCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+      currentLink = linkVideo;
+      socket.emit("authCode", currentCode);
+      console.log(`Código generado: ${currentCode} para el video: ${linkVideo}`);
     }
   });
 
+  // Validar código
   socket.on("validateCode", (code, callback) => {
-    if (activeCodes.has(code)) {
-      const linkVideo = activeCodes.get(code);
+    const isValid = code === currentCode;
+    if (isValid) {
       callback(true);
-      socket.emit("linkVideo", linkVideo);
-      activeCodes.delete(code);
+      socket.emit("linkVideo", currentLink);
     } else {
       callback(false);
     }
   });
+
+  // Estado de verificación
+  socket.on("getVerificationStatus", (callback) => {
+    callback(!!currentCode);
+  });
 });
 
-console.log("Server running on port 3000");
+console.log("Servidor ejecutándose en el puerto 3000");

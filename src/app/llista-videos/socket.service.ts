@@ -35,8 +35,16 @@ export class SocketService {
   validateCode(code: string): Promise<boolean> {
     return new Promise((resolve) => {
       this.socket.emit('validateCode', code, (isValid: boolean) => {
-        if (isValid) this.codeVerified.next(true);
+        this.codeVerified.next(isValid);
         resolve(isValid);
+      });
+    });
+  }
+
+  getVerificationStatus(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.socket.emit('getVerificationStatus', (status: boolean) => {
+        resolve(status);
       });
     });
   }

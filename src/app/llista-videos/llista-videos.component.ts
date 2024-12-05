@@ -26,12 +26,16 @@ export class LlistaVideosComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Suscribimos al estado de verificación
     this.subscriptions.add(
       this.socketService.isCodeVerified().subscribe((verified) => {
         this.videoVisible = verified;
       })
     );
+
+    // Consultar estado en el servidor al cargar el componente
+    this.socketService.getVerificationStatus().then((status) => {
+      this.videoVisible = status;
+    });
   }
 
   ngOnDestroy() {
