@@ -61,4 +61,10 @@ io.on("connection", (socket) => {
 const cors = require('cors');
 app.use(cors());
 
+app.post('/login', async (req, res) =>{
+  var FormData = require.body
+  
+})
+
+
 console.log("Servidor ejecutándose en el puerto 3000");
