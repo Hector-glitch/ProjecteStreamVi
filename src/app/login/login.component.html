@@ -1,0 +1,12 @@
+<body>
+<div class="form-container">
+    <h1>Inici de Sessió</h1>
+    <form (ngSubmit)="onSubmit()">
+        <input type="email" [(ngModel)]="formData.userEmail" name="email" placeholder="Correu electrònic">
+        <input type="password" [(ngModel)]="formData.userPassword" name="contrassenya" placeholder="Contrasenya">
+        <p id="error_login" *ngIf="error">{{error}}</p>
+        <button id="boto-login" type="submit">Iniciar sessió</button>
+    </form>
+    <p id="registrarse-boto" routerLink="/registre">Registrar-se</p>
+</div>
+</body>
