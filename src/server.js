@@ -9,7 +9,6 @@ const videos = {
   video3: "https://www.youtube.com/embed/e1cWEKdTmuo",
 };
 let currentCode = null; // Código actual
-let currentLink = null; // Enlace del video actual
 let selectedVideo = null; // Guardar el video seleccionado
 const io = new Server(3000, {
   cors: {

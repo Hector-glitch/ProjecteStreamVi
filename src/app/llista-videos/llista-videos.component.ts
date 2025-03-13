@@ -39,8 +39,6 @@ export class LlistaVideosComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
@@ -53,7 +51,6 @@ export class LlistaVideosComponent implements OnInit, OnDestroy {
       alert("Selección realizada. Verifica el código en la siguiente página.");
     }
   }
-
 
   verifySelectedVideo() {
     window.location.href = 'http://localhost:4300'; // Redirigir a la página de verificación
