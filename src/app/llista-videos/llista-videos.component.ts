@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { SocketService } from './socket.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-llista-videos',
@@ -16,14 +17,26 @@ export class LlistaVideosComponent implements OnInit, OnDestroy {
   selectedVideo: string = '';
   videoVisible: boolean = false;
   isVideoSent: boolean = false;
+  isPremium: boolean = false;
   subscriptions: Subscription = new Subscription();
 
   constructor(
     private sanitizer: DomSanitizer,
-    public socketService: SocketService,
+    private router: Router,
+    public socketService: SocketService
   ) {}
 
   ngOnInit() {
+    // Verificar si el usuario es Premium
+    const token = localStorage.getItem('authToken');
+    this.isPremium = !!token; // Si hay token, es Premium
+
+    // Si el usuario intenta acceder a video2 y no es premium, redirigirlo
+    if (!this.isPremium && this.selectedVideo === 'video2') {
+      alert('Necesitas una cuenta premium para ver este video.');
+      this.router.navigate(['/login']);
+    }
+
     this.subscriptions.add(
       this.socketService.isCodeVerified().subscribe((verified) => {
         this.videoVisible = verified;
@@ -45,6 +58,12 @@ export class LlistaVideosComponent implements OnInit, OnDestroy {
 
   sendSelectedVideo() {
     if (this.selectedVideo) {
+      // Bloquear si intenta seleccionar video2 sin ser Premium
+      if (!this.isPremium && this.selectedVideo === 'video2') {
+        alert('Debes ser usuario Premium para ver este video.');
+        return;
+      }
+
       this.socketService.selectVideo(this.selectedVideo); // Notifica al servidor sobre la selección
       this.isVideoSent = true; // Indica que se ha enviado
       this.videoVisible = false; // Oculta el video, ya que requiere verificación

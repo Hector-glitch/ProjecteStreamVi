@@ -39,9 +39,11 @@ export class LoginComponent implements OnInit {
         where("contrasenya", "==", this.formData.userPassword)
       );
 
+
       const querySnapshot = await getDocs(userQuery);
 
       if (!querySnapshot.empty) {
+        var tokenKey = 'none'
         // L'usuari existeix
         const userDoc = querySnapshot.docs[0]; // Agafa el primer document trobat
         const userData = userDoc.data();
@@ -49,6 +51,10 @@ export class LoginComponent implements OnInit {
         // Guarda la sessió a localStorage
         localStorage.setItem('isLogged', 'true');
         localStorage.setItem('isPremium', userData['isPremium'] ? 'true' : 'false');
+
+        if (userData['isPremium']){
+
+        }
 
         // Redirigir a la pàgina de vídeos
         this.router.navigate(['/lista-videos']);
