@@ -10,7 +10,7 @@ import { FormsModule } from "@angular/forms";
   standalone: true,
   imports: [NgIf, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
   formData = {
@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
     userPassword: ''
   };
   error: string = '';
+  private secretKey = 'mi_clave_secreta'; // Clau secreta per al token
 
   constructor(private router: Router) { }
 
@@ -39,22 +40,34 @@ export class LoginComponent implements OnInit {
         where("contrasenya", "==", this.formData.userPassword)
       );
 
-
       const querySnapshot = await getDocs(userQuery);
 
       if (!querySnapshot.empty) {
-        var tokenKey = 'none'
         // L'usuari existeix
         const userDoc = querySnapshot.docs[0]; // Agafa el primer document trobat
         const userData = userDoc.data();
 
-        // Guarda la sessió a localStorage
-        localStorage.setItem('isLogged', 'true');
-        localStorage.setItem('isPremium', userData['isPremium'] ? 'true' : 'false');
+        // Comprova si l'usuari és premium
+        const isPremium = userData['isPremium'];
 
-        if (userData['isPremium']){
+        // Generar el token només si l'usuari és Premium
+        if (isPremium) {
+          const tokenData = {
+            email: this.formData.userEmail,
+            isPremium: isPremium,
+            exp: Date.now() + 15 * 60 * 1000 // Expiració a 15 minuts
+          };
 
+          // Codificar les dades en base64
+          const token = btoa(JSON.stringify(tokenData) + '.' + this.secretKey);
+
+          // Emmagatzemar el token a localStorage
+          localStorage.setItem('authToken', token);
         }
+
+        // Guarda altres dades de la sessió
+        localStorage.setItem('isLogged', 'true');
+        localStorage.setItem('isPremium', isPremium ? 'true' : 'false');
 
         // Redirigir a la pàgina de vídeos
         this.router.navigate(['/lista-videos']);

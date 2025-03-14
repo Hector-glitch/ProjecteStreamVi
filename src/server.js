@@ -1,7 +1,11 @@
 const { Server } = require("socket.io");
 const express = require('express');
-
+const cors = require('cors');
 const app = express();
+
+app.use(cors());
+
+const secretKey = 'laTevaClauSecreta';
 
 const videos = {
   video1: "https://www.youtube.com/embed/wIC18c1Qkcg",
@@ -57,7 +61,5 @@ io.on("connection", (socket) => {
   });
 });
 
-const cors = require('cors');
-app.use(cors());
 
 console.log("Servidor ejecutándose en el puerto 3000");
